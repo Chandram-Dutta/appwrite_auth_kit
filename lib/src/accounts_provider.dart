@@ -64,9 +64,10 @@ class AuthNotifier extends ChangeNotifier {
     try {
       _user = await _account.get();
       _status = AuthStatus.authenticated;
-    } on AppwriteException catch (e) {
+    } catch (e) {
       _status = AuthStatus.unauthenticated;
-      _error = e.message;
+      _error = e.toString();
+      rethrow;
     } finally {
       _loading = false;
       if (notify) {
@@ -82,9 +83,9 @@ class AuthNotifier extends ChangeNotifier {
       _status = AuthStatus.unauthenticated;
       notifyListeners();
       return true;
-    } on AppwriteException catch (e) {
-      _error = e.message;
-      return false;
+    } catch (e) {
+      _error = e.toString();
+      rethrow;
     }
   }
 
@@ -95,9 +96,9 @@ class AuthNotifier extends ChangeNotifier {
       _status = AuthStatus.unauthenticated;
       notifyListeners();
       return true;
-    } on AppwriteException catch (e) {
-      _error = e.message;
-      return false;
+    } catch (e) {
+      _error = e.toString();
+      rethrow;
     }
   }
 
@@ -114,13 +115,13 @@ class AuthNotifier extends ChangeNotifier {
       await _account.createEmailSession(email: email, password: password);
       _getUser(notify: notify);
       return true;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       _status = AuthStatus.unauthenticated;
       if (notify) {
         notifyListeners();
       }
-      return false;
+      rethrow;
     }
   }
 
@@ -133,11 +134,11 @@ class AuthNotifier extends ChangeNotifier {
     try {
       await _account.createPhoneSession(userId: userId, phone: number);
       return true;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       _status = AuthStatus.unauthenticated;
       notifyListeners();
-      return false;
+      rethrow;
     }
   }
 
@@ -151,11 +152,11 @@ class AuthNotifier extends ChangeNotifier {
       await _account.updatePhoneSession(userId: userId, secret: secret);
       await _getUser();
       return true;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       _status = AuthStatus.unauthenticated;
       notifyListeners();
-      return false;
+      rethrow;
     }
   }
 
@@ -166,11 +167,11 @@ class AuthNotifier extends ChangeNotifier {
       await _account.createAnonymousSession();
       _getUser();
       return true;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       _status = AuthStatus.unauthenticated;
       notifyListeners();
-      return false;
+      rethrow;
     }
   }
 
@@ -185,11 +186,11 @@ class AuthNotifier extends ChangeNotifier {
       await _account.createMagicURLSession(
           userId: userId, email: email, url: url);
       return true;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       _status = AuthStatus.unauthenticated;
       notifyListeners();
-      return false;
+      rethrow;
     }
   }
 
@@ -203,21 +204,21 @@ class AuthNotifier extends ChangeNotifier {
       await _account.updateMagicURLSession(userId: userId, secret: secret);
       _getUser();
       return true;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       _status = AuthStatus.unauthenticated;
       notifyListeners();
-      return false;
+      rethrow;
     }
   }
 
   Future<model.Jwt?> createJWT() async {
     try {
       return await _account.createJWT();
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
@@ -243,13 +244,13 @@ class AuthNotifier extends ChangeNotifier {
         await createEmailSession(email: email, password: password);
       }
       return user;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       _status = AuthStatus.unauthenticated;
       if (notify) {
         notifyListeners();
       }
-      return null;
+      rethrow;
     }
   }
 
@@ -258,11 +259,11 @@ class AuthNotifier extends ChangeNotifier {
       await _account.updateStatus();
       _getUser();
       return true;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       _status = AuthStatus.unauthenticated;
       notifyListeners();
-      return false;
+      rethrow;
     }
   }
 
@@ -272,10 +273,10 @@ class AuthNotifier extends ChangeNotifier {
       _user = await _account.updatePrefs(prefs: prefs);
       notifyListeners();
       return _user;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
@@ -285,10 +286,10 @@ class AuthNotifier extends ChangeNotifier {
         if (limit != null) Query.limit(limit),
         if (offset != null) Query.offset(offset),
       ]);
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
@@ -307,30 +308,30 @@ class AuthNotifier extends ChangeNotifier {
       );
       _getUser();
       return true;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return false;
+      rethrow;
     }
   }
 
   Future<model.Session?> getSession({required String sessionId}) async {
     try {
       return await _account.getSession(sessionId: sessionId);
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
   Future<model.SessionList?> getSessions() async {
     try {
       return await _account.listSessions();
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
@@ -339,10 +340,10 @@ class AuthNotifier extends ChangeNotifier {
       _user = await _account.updateName(name: name);
       notifyListeners();
       return _user;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
@@ -354,10 +355,10 @@ class AuthNotifier extends ChangeNotifier {
       _user = await _account.updatePhone(phone: number, password: password);
       notifyListeners();
       return _user;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
@@ -369,10 +370,10 @@ class AuthNotifier extends ChangeNotifier {
       _user = await _account.updateEmail(email: email, password: password);
       notifyListeners();
       return _user;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
@@ -385,10 +386,10 @@ class AuthNotifier extends ChangeNotifier {
           password: password, oldPassword: oldPassword);
       notifyListeners();
       return _user;
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
@@ -399,10 +400,10 @@ class AuthNotifier extends ChangeNotifier {
   }) async {
     try {
       return await _account.createRecovery(email: email, url: url);
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
@@ -419,10 +420,10 @@ class AuthNotifier extends ChangeNotifier {
           password: password,
           passwordAgain: passwordAgain,
           secret: secret);
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
@@ -430,10 +431,10 @@ class AuthNotifier extends ChangeNotifier {
   Future<model.Token?> createVerification({required String url}) async {
     try {
       return await _account.createVerification(url: url);
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 
@@ -444,10 +445,10 @@ class AuthNotifier extends ChangeNotifier {
   }) async {
     try {
       return await _account.updateVerification(userId: userId, secret: secret);
-    } on AppwriteException catch (e) {
-      _error = e.message;
+    } catch (e) {
+      _error = e.toString();
       notifyListeners();
-      return null;
+      rethrow;
     }
   }
 }
