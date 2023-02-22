@@ -64,10 +64,9 @@ class AuthNotifier extends ChangeNotifier {
     try {
       _user = await _account.get();
       _status = AuthStatus.authenticated;
-    } catch (e) {
+    } on AppwriteException catch (e) {
       _status = AuthStatus.unauthenticated;
-      _error = e.toString();
-      rethrow;
+      _error = e.message;
     } finally {
       _loading = false;
       if (notify) {
