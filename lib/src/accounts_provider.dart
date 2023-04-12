@@ -42,7 +42,7 @@ class AuthNotifier extends ChangeNotifier {
   final Client _client;
   AuthStatus _status = AuthStatus.uninitialized;
 
-  model.Account? _user;
+  model.User? _user;
   String? _error;
   late bool _loading;
 
@@ -57,7 +57,7 @@ class AuthNotifier extends ChangeNotifier {
   Client get client => _client;
   String? get error => _error;
   bool get isLoading => _loading;
-  model.Account? get user => _user;
+  model.User? get user => _user;
   AuthStatus get status => _status;
 
   Future _getUser({bool notify = true}) async {
@@ -223,7 +223,7 @@ class AuthNotifier extends ChangeNotifier {
 
   /// Create account
   ///
-  Future<model.Account?> create({
+  Future<model.User?> create({
     required String email,
     required String password,
     String userId = 'unique()',
@@ -266,8 +266,7 @@ class AuthNotifier extends ChangeNotifier {
     }
   }
 
-  Future<model.Account?> updatePrefs(
-      {required Map<String, dynamic> prefs}) async {
+  Future<model.User?> updatePrefs({required Map<String, dynamic> prefs}) async {
     try {
       _user = await _account.updatePrefs(prefs: prefs);
       notifyListeners();
@@ -334,7 +333,7 @@ class AuthNotifier extends ChangeNotifier {
     }
   }
 
-  Future<model.Account?> updateName({required String name}) async {
+  Future<model.User?> updateName({required String name}) async {
     try {
       _user = await _account.updateName(name: name);
       notifyListeners();
@@ -346,7 +345,7 @@ class AuthNotifier extends ChangeNotifier {
     }
   }
 
-  Future<model.Account?> updatePhone({
+  Future<model.User?> updatePhone({
     required String number,
     required String password,
   }) async {
@@ -361,7 +360,7 @@ class AuthNotifier extends ChangeNotifier {
     }
   }
 
-  Future<model.Account?> updateEmail({
+  Future<model.User?> updateEmail({
     required String email,
     required String password,
   }) async {
@@ -376,7 +375,7 @@ class AuthNotifier extends ChangeNotifier {
     }
   }
 
-  Future<model.Account?> updatePassword({
+  Future<model.User?> updatePassword({
     required String password,
     String? oldPassword,
   }) async {
